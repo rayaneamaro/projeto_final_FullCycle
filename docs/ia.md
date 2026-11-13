@@ -1,22 +1,25 @@
 # Uso de IA
 
-A IA foi usada para estruturar a implementação inicial da API, sugerir a
-organização dos artefatos do Projeto B e revisar casos de validação.
-
-As decisões finais, incluindo o domínio de pedidos, SQLite, o SLO de p95 e
-os limites de entrada, foram revisadas e assumidas pela autora.
+A IA foi usada nesta revisão para analisar o repositório, propor mudanças
+pequenas e executar validações. As decisões finais foram revisadas e
+assumidas pela autora.
 
 ## Prompts que contribuíram
 
-- “Implemente uma API REST de pedidos em TypeScript com Express e SQLite,
-  incluindo validação de entrada, logs estruturados, métricas Prometheus e
-  testes automatizados.”
-  A sugestão foi ajustada para manter o domínio pequeno, usar `better-sqlite3`
-  e expor apenas os endpoints necessários para o Projeto B.
-- “Revise a API procurando problemas de observabilidade e cardinalidade nas
-  métricas.”
-  A sugestão foi alterada para usar `req.route?.path` como rótulo e buckets
-  explícitos, incluindo `0.3` segundo para o SLO.
-- “Separe o caso de uso da persistência sem adicionar um framework.”
-  A sugestão foi aplicada como um serviço de aplicação e um Repository
-  baseado em funções, preservando a simplicidade do projeto.
+- “O que corrigir, por prioridade: medir o p95 real, colocar o nível na
+  primeira linha do README, listar prompts reais, corrigir a cardinalidade
+  das métricas e melhorar ou documentar honestamente o design.”
+  Esse foi um pedido de revisão da autora, não uma sugestão gerada pela IA.
+  Usei `rg`/`view` para inspeção, `apply_patch` para as alterações e `bash`
+  para build, testes, Docker Compose e k6.
+- “O p95 precisa ser uma medição real; confira também se o better-sqlite3
+  funciona no Alpine.”
+  Esse segundo comentário da autora levou à execução de
+  `docker compose up --build -d` e do smoke test com a imagem
+  `grafana/k6`; o resultado foi registrado em [desempenho](desempenho.md).
+- “Deixe o texto fiel ao que realmente aconteceu, inclusive qual ferramenta
+  fez cada coisa.”
+  Em resposta, removi prompts atribuídos indevidamente à IA e identifiquei
+  as ferramentas usadas. Caso a conversa com Claude seja incluída na entrega,
+  ela deve ser citada como uma fonte separada, com o prompt que realmente foi
+  enviado e a alteração correspondente.

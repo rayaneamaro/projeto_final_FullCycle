@@ -24,3 +24,4 @@ export function createOrder(customerName: string, items: OrderItemInput[]): Orde
     createdAt: new Date().toISOString()
   };
 }
+

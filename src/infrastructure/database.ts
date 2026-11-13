@@ -2,6 +2,7 @@ import Database from "better-sqlite3";
 import fs from "node:fs";
 import path from "node:path";
 import type { Order } from "../domain/order.js";
+import type { OrderRepository } from "../application/order-service.js";
 
 export function openDatabase(filename: string): Database.Database {
   fs.mkdirSync(path.dirname(filename), { recursive: true });
@@ -43,5 +44,12 @@ export function findOrder(db: Database.Database, id: string): Order | undefined 
     items: JSON.parse(row.items_json) as Order["items"],
     total: row.total,
     createdAt: row.created_at
+  };
+}
+
+export function createOrderRepository(db: Database.Database): OrderRepository {
+  return {
+    save: (order) => saveOrder(db, order),
+    findById: (id) => findOrder(db, id)
   };
 }

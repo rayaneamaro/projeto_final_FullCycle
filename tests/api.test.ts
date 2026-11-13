@@ -33,6 +33,19 @@ describe("orders API", () => {
     const metrics = await request(app).get("/metrics");
     expect(metrics.status).toBe(200);
     expect(metrics.text).toContain("http_requests_total");
+    expect(metrics.text).toContain('http_request_duration_seconds_bucket{le="0.3"');
+  });
+
+  it("uses the route template for order metrics", async () => {
+    const app = createApp(db);
+    const response = await request(app).post("/orders").send({
+      customerName: "Rayane",
+      items: [{ description: "Book", quantity: 1, unitPrice: 10 }]
+    });
+    const metrics = await request(app).get("/metrics");
+
+    expect(metrics.text).toContain('http_requests_total{method="POST",route="/orders",status="201"}');
+    expect(metrics.text).not.toContain(`route="/orders/${response.body.id}"`);
   });
 
   it("returns not found for an unknown order", async () => {

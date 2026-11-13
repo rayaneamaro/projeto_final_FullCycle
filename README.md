@@ -1,6 +1,4 @@
-# Projeto final Full Cycle - Projeto B
-
-**Nível escolhido: Projeto B (API de pedidos).**
+# Projeto final Full Cycle — Nível escolhido: Projeto B (API de pedidos)
 
 API REST de domínio único para criar e consultar pedidos. A aplicação usa
 TypeScript, Express e SQLite, com validação de entrada, logs estruturados,

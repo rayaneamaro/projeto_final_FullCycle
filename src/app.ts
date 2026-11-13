@@ -2,8 +2,8 @@ import express, { type Request, type Response } from "express";
 import pino from "pino";
 import { Counter, Histogram, Registry } from "prom-client";
 import { z } from "zod";
-import { createOrder } from "./domain/order.js";
-import { findOrder, saveOrder } from "./infrastructure/database.js";
+import { createOrderService } from "./application/order-service.js";
+import { createOrderRepository } from "./infrastructure/database.js";
 import type Database from "better-sqlite3";
 
 const orderSchema = z.object({
@@ -17,6 +17,7 @@ const orderSchema = z.object({
 
 export function createApp(db: Database.Database, logger = pino({ level: "silent" })) {
   const app = express();
+  const orders = createOrderService(createOrderRepository(db));
   const registry = new Registry();
   const requests = new Counter({
     name: "http_requests_total",
@@ -28,6 +29,7 @@ export function createApp(db: Database.Database, logger = pino({ level: "silent"
     name: "http_request_duration_seconds",
     help: "HTTP request duration",
     labelNames: ["method", "route"],
+    buckets: [0.1, 0.2, 0.3, 0.5, 1, 2, 5],
     registers: [registry]
   });
 
@@ -35,8 +37,9 @@ export function createApp(db: Database.Database, logger = pino({ level: "silent"
   app.use((req, res, next) => {
     const start = process.hrtime.bigint();
     res.on("finish", () => {
-      requests.inc({ method: req.method, route: req.path, status: res.statusCode });
-      latency.observe({ method: req.method, route: req.path }, Number(process.hrtime.bigint() - start) / 1e9);
+      const route = req.route?.path ?? req.path;
+      requests.inc({ method: req.method, route, status: res.statusCode });
+      latency.observe({ method: req.method, route }, Number(process.hrtime.bigint() - start) / 1e9);
       logger.info({ method: req.method, path: req.path, status: res.statusCode }, "request completed");
     });
     next();
@@ -53,12 +56,11 @@ export function createApp(db: Database.Database, logger = pino({ level: "silent"
       res.status(400).json({ error: "invalid_request", details: result.error.flatten() });
       return;
     }
-    const order = createOrder(result.data.customerName, result.data.items);
-    saveOrder(db, order);
+    const order = orders.create(result.data.customerName, result.data.items);
     res.status(201).json(order);
   });
   app.get("/orders/:id", (req, res) => {
-    const order = findOrder(db, req.params.id);
+    const order = orders.findById(req.params.id);
     if (!order) {
       res.status(404).json({ error: "order_not_found" });
       return;

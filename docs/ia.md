@@ -28,8 +28,7 @@ serviço e `ia.md` genérico.
 - **Não apliquei:** documentar `/health` e `/metrics` no OpenAPI, mais testes
   de domínio e o tratamento de rotas inexistentes nas métricas.
 
-O Claude também gerou uma versão alternativa do projeto (API de tarefas) que
-não usei.
+
 
 ## Validação
 

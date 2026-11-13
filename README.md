@@ -1,5 +1,4 @@
-# Projeto final Full Cycle 
-Nível escolhido: Projeto B (API de pedidos)
+# Projeto final Full Cycle - Nível escolhido: Projeto B (API de pedidos)
 
 [![CI](https://github.com/rayaneamaro/projeto_final_FullCycle/actions/workflows/ci.yml/badge.svg)](https://github.com/rayaneamaro/projeto_final_FullCycle/actions/workflows/ci.yml)
 

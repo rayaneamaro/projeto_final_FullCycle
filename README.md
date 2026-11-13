@@ -1,4 +1,7 @@
-# Projeto final Full Cycle — Nível escolhido: Projeto B (API de pedidos)
+# Projeto final Full Cycle 
+## Nível escolhido: Projeto B (API de pedidos)
+
+[![CI](https://github.com/rayaneamaro/projeto_final_FullCycle/actions/workflows/ci.yml/badge.svg)](https://github.com/rayaneamaro/projeto_final_FullCycle/actions/workflows/ci.yml)
 
 API REST de domínio único para criar e consultar pedidos. A aplicação usa
 TypeScript, Express e SQLite, com validação de entrada, logs estruturados,

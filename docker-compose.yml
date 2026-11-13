@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      PORT: 3000
+      DATABASE_FILE: /app/data/orders.db
+      LOG_LEVEL: info
+    volumes:
+      - orders-data:/app/data
+
+volumes:
+  orders-data:

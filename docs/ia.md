@@ -1,25 +1,37 @@
 # Uso de IA
 
-A IA foi usada nesta revisão para analisar o repositório, propor mudanças
-pequenas e executar validações. As decisões finais foram revisadas e
-assumidas pela autora.
+Escolhi o Projeto B porque era o nível que eu conseguia entregar melhor no
+prazo. Usei IA como apoio, mas as decisões do projeto foram minhas.
 
-## Prompts que contribuíram
+## GitHub Copilot
 
-- “O que corrigir, por prioridade: medir o p95 real, colocar o nível na
-  primeira linha do README, listar prompts reais, corrigir a cardinalidade
-  das métricas e melhorar ou documentar honestamente o design.”
-  Esse foi um pedido de revisão da autora, não uma sugestão gerada pela IA.
-  Usei `rg`/`view` para inspeção, `apply_patch` para as alterações e `bash`
-  para build, testes, Docker Compose e k6.
-- “O p95 precisa ser uma medição real; confira também se o better-sqlite3
-  funciona no Alpine.”
-  Esse segundo comentário da autora levou à execução de
-  `docker compose up --build -d` e do smoke test com a imagem
-  `grafana/k6`; o resultado foi registrado em [desempenho](desempenho.md).
-- “Deixe o texto fiel ao que realmente aconteceu, inclusive qual ferramenta
-  fez cada coisa.”
-  Em resposta, removi prompts atribuídos indevidamente à IA e identifiquei
-  as ferramentas usadas. Caso a conversa com Claude seja incluída na entrega,
-  ela deve ser citada como uma fonte separada, com o prompt que realmente foi
-  enviado e a alteração correspondente.
+Usei o GitHub Copilot como guia durante a construção: ele gerou a estrutura
+inicial da API de pedidos (TypeScript, Express e SQLite) e aplicou as
+correções depois da análise descrita abaixo. Não tenho registro dos prompts
+que enviei ao Copilot, então não os reproduzo aqui. A medição de p95 com o
+k6, registrada em [desempenho](desempenho.md), foi executada pelo Copilot
+no ambiente dele, com Docker Compose.
+
+## Claude (chat)
+
+Usei o Claude para analisar o repositório contra a rubrica. Colei o texto dos
+slides do encontro 24, enviei o link do meu repositório e pedi "analisa de
+novo" a cada versão.
+
+O que o Claude apontou: p95 sem medição, nível fora da primeira linha do
+README, rótulo de rota da métrica com cardinalidade alta, falta de camada de
+serviço e `ia.md` genérico.
+
+- **Apliquei:** medição do p95, nível na primeira linha, rótulo da métrica
+  com `req.route?.path`, bucket de 0,3 s, camada de serviço com Repository,
+  ADR atualizado e este arquivo.
+- **Não apliquei:** documentar `/health` e `/metrics` no OpenAPI, mais testes
+  de domínio e o tratamento de rotas inexistentes nas métricas.
+
+O Claude também gerou uma versão alternativa do projeto (API de tarefas) que
+não usei.
+
+## Validação
+
+Conferi o resultado pela execução verde da CI (install, lint, test e
+coverage).
